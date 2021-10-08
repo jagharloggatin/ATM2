@@ -7,27 +7,26 @@ namespace ATM2
     {
         public class PersonAccount
         {
-            public int _accountName { get; set; }
+            public string _accountName { get; set; }
             public int _accountPin { get; set; }
 
-            public PersonAccount(int accountName, int accountPin) 
+            public PersonAccount(string accountName, int accountPin) 
             {
                 _accountName = accountName;
                 _accountPin = accountPin;
             }
         }
         public const decimal _maxAmountOfMoneyInput = 1000;
-        static int pinNumber;
+        static int accountPin;
 
 
         static void Main(string[] args)
         {
             List<PersonAccount> AccountList = new List<PersonAccount>();
-            bool quitChoice = true;
             int option;
-            string userEntry;
-            while (quitChoice)
+            while (true)
             {
+                Console.Clear();
                 Logotype();             //just a logotype
                 getWelcome();           //welcomes the user
                 option = MenuChoice();   //First menu, choose between Account creation or log into your account
@@ -42,6 +41,7 @@ namespace ATM2
                         Console.WriteLine($"A card has successfully been generated");
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("press any key to continue");
+                        
                         Console.ReadKey();
                         break;
 
@@ -49,29 +49,9 @@ namespace ATM2
                         Console.Clear();
                         Logotype();
                         LogIn(AccountList);
+
                         break;
                 };
-
-                Console.Clear();
-                Logotype();
-                Console.WriteLine("Would you like to quit to continue? \"y / n\""); //asks the user wether to quit or to continue
-                userEntry = Console.ReadLine();
-
-                if (userEntry.ToLower() == "y") // yes to continue the program
-                {
-                    Console.Clear();
-                    continue;
-                }
-                else if (userEntry.ToLower() == "n") // no to exit the program
-                {
-                    quitChoice = false;
-                }
-                else //any other input will result in the loop continuing
-                {
-                    Console.ForegroundColor = ConsoleColor.Red; 
-                    Console.WriteLine($"\"{userEntry}\" is not a valid input! Try again!");
-                    continue;
-                }
             }
         }
         public static void LogIn(List<PersonAccount> AccountList) // Log in to your account
@@ -93,14 +73,91 @@ namespace ATM2
                     Console.WriteLine($"{name._accountPin}");
                 }
                 Console.WriteLine("------------------------------------------");
-                Console.WriteLine("please type your \"username; login\"");
+                Console.WriteLine("please type in your \"username\"");
                 userEntry = Console.ReadLine();
-                string[] parts = userEntry.Split(';');
 
+                if (string.IsNullOrEmpty(userEntry) || string.IsNullOrWhiteSpace(userEntry))
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Wrong input, {userEntry.ToString()} is not a valid input! Try again!");  //
+                    continue;
+                }
+                bool correctInput = true;
+                do
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine("please type \"username\"");
+                    userEntry = Console.ReadLine();
+                    foreach (var username in AccountList)
+                    {
+                        if (userEntry == username._accountName)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine($"Welcome {userEntry}");
+                            correctInput = false;
+                        }
+                    }
+                    if (correctInput == true)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"Wrong {userEntry} is not a valid username, try again!");
+                        continue;
+                    }
+                }
+                while (correctInput);
+                int counter = 0;
+                correctInput = true;
+                const int numberOfTries = 4;
+                bool tries = false;
+                do
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine();
+                    Console.WriteLine("Please type \"password\"");
+                    userEntry = Console.ReadLine();
+                    if (int.TryParse(userEntry, out int userEntryint) == false || counter > numberOfTries)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"Wrong Input! {userEntry} is not a valid password! Try again!");
+                        continue;
+                    }
+                    foreach (var password in AccountList)
+                    {
+                        if (userEntryint == password._accountPin)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("Password was correct!");
+                            correctInput = false;
+                        }
+                    }
+                    if (correctInput == true)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"Wrong {userEntry} is not a valid password, try again! {counter + 1} / 3 tries");
+                        counter++;
+                        if (counter == numberOfTries)
+                        {
+                            Console.WriteLine("too many tries!");
+                            tries = true;
+                            break;
+                        }
+                        continue;
+                    }
 
+                }
+                while (correctInput);
+                
+                if (tries == true)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Too many tries! Press any key to continue");
+                    Console.ReadKey();
+                    break;
+                }
 
-
+                Console.WriteLine("you made it!");
                 Console.ReadKey();
+
             }
         }
         private static void getWelcome() //welcomes to user!
@@ -124,27 +181,36 @@ namespace ATM2
         private static PersonAccount AccountCreation() //creates a card and returns cardnr and cardpin and created account
         {
             string userEntry;
-            
-            bool loopQuit = true;
+            string accountName;
 
             while (true)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine("Type in a creditcardnumber, it has to be 10 digits!");
+                Console.WriteLine("Type in an accountname, it has to be atleast 3 letters long!");
                 userEntry = Console.ReadLine();
                 Console.WriteLine();
 
-                if (int.TryParse(userEntry, out int cardNr) == false)
+                if (string.IsNullOrEmpty(userEntry) || string.IsNullOrWhiteSpace(userEntry)) 
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Wrong input, {userEntry.ToString()} is not a valid input! Try again!");  //checks if userinput is correct, store it to variables and returns person with cardNr and PinNumber
+                    Console.WriteLine($"Wrong input, {userEntry.ToString()} is not a valid input! Try again!");  //
                     continue;
                 }
-                if (userEntry.Length != 10)
+                if (userEntry.Length < 3 || userEntry.Length > 20)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Wrong input, {userEntry.ToString()} is not a valid input! Try again!");
+                    Console.WriteLine($"Wrong input, username has to be longer than 5 letters");
                     continue;
+                }
+                if (int.TryParse(userEntry, out _) == true) // if there's only integers, return false
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Wrong input, {userEntry.ToString()} is not a valid input! Try again!");  //
+                    continue;
+                }
+                else
+                {
+                    accountName = userEntry;
                 }
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("Please insert your pin number");
@@ -158,7 +224,7 @@ namespace ATM2
                     continue;
 
                 }
-                if (int.TryParse(userEntry, out pinNumber) == false)
+                if (int.TryParse(userEntry, out accountPin) == false)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Wrong input, {userEntry.ToString()} is not a valid input! Try again!");
@@ -166,7 +232,7 @@ namespace ATM2
                 }
                 else 
                 {
-                    return (new PersonAccount(cardNr, pinNumber));   
+                    return (new PersonAccount(accountName, accountPin));   
                 }
             }
 
@@ -209,6 +275,28 @@ namespace ATM2
 
     }
 }
+
+
+/*                 Console.Clear();
+                Logotype();
+                Console.WriteLine("Would you like to quit to continue? \"y / n\""); //asks the user wether to quit or to continue
+                userEntry = Console.ReadLine();
+
+                if (userEntry.ToLower() == "y") // yes to continue the program
+                {
+                    Console.Clear();
+                    continue;
+                }
+                else if (userEntry.ToLower() == "n") // no to exit the program
+                {
+                    quitChoice = false;
+                }
+                else //any other input will result in the loop continuing
+                {
+                    Console.ForegroundColor = ConsoleColor.Red; 
+                    Console.WriteLine($"\"{userEntry}\" is not a valid input! Try again!");
+                    continue; 
+                } */
 
 
 
