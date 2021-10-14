@@ -72,41 +72,40 @@ namespace ATM2
                     Console.WriteLine($"{name._accountName}");
                     Console.WriteLine($"{name._accountPin}");
                 }
-                Console.WriteLine("------------------------------------------");
-                Console.WriteLine("please type in your \"username\"");
-                userEntry = Console.ReadLine();
 
-                if (string.IsNullOrEmpty(userEntry) || string.IsNullOrWhiteSpace(userEntry))
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"Wrong input, {userEntry.ToString()} is not a valid input! Try again!");  //
-                    continue;
-                }
-                bool correctInput = true;
-                do
+                bool inCorrectInput = true;
+                do                                                  // a do while to check if username is correct, DO until correct input then break loop
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.WriteLine("please type \"username\"");
                     userEntry = Console.ReadLine();
+
+                    if (string.IsNullOrEmpty(userEntry) || string.IsNullOrWhiteSpace(userEntry))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"Wrong input, {userEntry.ToString()} is not a valid input! Try again!");  //
+                        continue;
+                    }
                     foreach (var username in AccountList)
                     {
-                        if (userEntry == username._accountName)
+                        if (userEntry == username._accountName)                   
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine($"Welcome {userEntry}");
-                            correctInput = false;
+                            inCorrectInput = false;                 // if username is correct, set incorrectinput to false and throw out of the loop!
                         }
                     }
-                    if (correctInput == true)
+                    if (inCorrectInput == true)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"Wrong {userEntry} is not a valid username, try again!");
                         continue;
                     }
+
                 }
-                while (correctInput);
+                while (inCorrectInput);                             //spins until set to false
                 int counter = 0;
-                correctInput = true;
+                inCorrectInput = true;
                 const int numberOfTries = 4;
                 bool tries = false;
                 do
@@ -119,6 +118,12 @@ namespace ATM2
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"Wrong Input! {userEntry} is not a valid password! Try again!");
+                        if (counter == numberOfTries) 
+                        {
+                            Console.WriteLine("too many tries!");        // försök till koden
+                            break;
+                        }
+                        counter++;
                         continue;
                     }
                     foreach (var password in AccountList)
@@ -127,10 +132,10 @@ namespace ATM2
                         {
                             Console.ForegroundColor = ConsoleColor.Green;
                             Console.WriteLine("Password was correct!");
-                            correctInput = false;
+                            inCorrectInput = false;
                         }
                     }
-                    if (correctInput == true)
+                    if (inCorrectInput == true)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"Wrong {userEntry} is not a valid password, try again! {counter + 1} / 3 tries");
@@ -145,7 +150,7 @@ namespace ATM2
                     }
 
                 }
-                while (correctInput);
+                while (inCorrectInput);
                 
                 if (tries == true)
                 {
@@ -169,15 +174,15 @@ namespace ATM2
         {
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("\n");
-            Console.WriteLine("   █████  ████████ ███    ███");
-            Console.WriteLine("  ██   ██    ██    ████  ████");
-            Console.WriteLine("  ███████    ██    ██ ████ ██");
-            Console.WriteLine("  ██   ██    ██    ██  ██  ██");
-            Console.WriteLine("  ██   ██    ██    ██      ██");
+            Console.WriteLine("                  █████  ████████ ███    ███");
+            Console.WriteLine("                 ██   ██    ██    ████  ████");
+            Console.WriteLine("                 ███████    ██    ██ ████ ██");
+            Console.WriteLine("                 ██   ██    ██    ██  ██  ██");
+            Console.WriteLine("                 ██   ██    ██    ██      ██");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Yellow;
         }
-
+        
         private static PersonAccount AccountCreation() //creates a card and returns cardnr and cardpin and created account
         {
             string userEntry;
