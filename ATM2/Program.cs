@@ -148,7 +148,6 @@ namespace ATM2
                         }
                         continue;
                     }
-
                 }
                 while (inCorrectInput);
                 
@@ -162,7 +161,6 @@ namespace ATM2
 
                 Console.WriteLine("you made it!");
                 Console.ReadKey();
-
             }
         }
         private static void getWelcome() //welcomes to user!
@@ -175,9 +173,13 @@ namespace ATM2
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("\n");
             Console.WriteLine("                  █████  ████████ ███    ███");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
             Console.WriteLine("                 ██   ██    ██    ████  ████");
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("                 ███████    ██    ██ ████ ██");
+            Console.ForegroundColor = ConsoleColor.DarkBlue;
             Console.WriteLine("                 ██   ██    ██    ██  ██  ██");
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("                 ██   ██    ██    ██      ██");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Yellow;
